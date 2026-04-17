@@ -1,6 +1,9 @@
 import { Pill, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import TodayCard from "../components/TodayCard";
+import { COLORS } from "../styles/colors";
+import packageJson from "../../package.json";
+import { Typography } from "@mui/material";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -24,6 +27,7 @@ export default function Home() {
           backgroundColor: "#EEF2FF",
           padding: "40px 16px",
           boxSizing: "border-box",
+          position: "relative", // ← これ追加
         }}
       >
         {/* タイトル */}
@@ -60,8 +64,8 @@ export default function Home() {
           <button
             style={{
               flex: 1,
-              backgroundColor: "#4caf50",
-              color: "#fff",
+              backgroundColor: COLORS.registButton,
+              color: COLORS.registButtonChar,
               padding: "14px",
               borderRadius: "12px",
               border: "none",
@@ -111,6 +115,18 @@ export default function Home() {
             カレンダー
           </button>
         </div>
+        <Typography
+          sx={{
+            position: "absolute",
+            bottom: 12,
+            right: 14,
+            fontSize: 11,
+            color: "#9aa3af",
+            letterSpacing: "0.5px",
+          }}
+        >
+          version {packageJson.version}
+        </Typography>
       </div>
     </div>
   );

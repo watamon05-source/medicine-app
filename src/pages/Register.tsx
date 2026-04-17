@@ -2,6 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Box } from "@mui/material";
+import { COLORS } from "../styles/colors";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -52,6 +57,11 @@ export default function Register() {
       return;
     }
 
+    if (!endDate) {
+      alert("終了日を入力してください");
+      return;
+    }
+
     const newMedicine = {
       id: Date.now().toString(),
       name,
@@ -81,18 +91,18 @@ export default function Register() {
         style={{
           width: "100%",
           maxWidth: "420px",
-          padding: "40px 16px 120px",
+          padding: "20px 12px",
           boxSizing: "border-box",
-          backgroundColor: "#EEF2FF",
+          backgroundColor: COLORS.background,
         }}
       >
-        <div
-          style={{
+        <Box
+          sx={{
             display: "flex",
             alignItems: "center",
             gap: "75px", // ← これが距離
             marginBottom: "16px",
-            backgroundColor: "#a8d5a2",
+            bgcolor: COLORS.headerLabel,
             width: "100%", // ← これ必須
             height: "60px", // ← これで高さ固定
           }}
@@ -113,12 +123,12 @@ export default function Register() {
               e.currentTarget.style.transform = "translateY(0)";
             }}
             style={{
-              background: "#66bb6a",
-              color: "#fff",
+              background: COLORS.backButton,
               border: "none",
               padding: "8px 20px",
               fontSize: "14px",
               cursor: "pointer",
+              color: COLORS.backButtonChar,
 
               // ← これがポイント
               clipPath:
@@ -135,13 +145,13 @@ export default function Register() {
               margin: -5,
               fontSize: "30px",
               fontWeight: "600",
-              color: "#FFFF",
+              color: COLORS.backButtonChar,
               fontFamily: '"Zen Maru Gothic", sans-serif',
             }}
           >
             薬を登録
           </h2>
-        </div>
+        </Box>
 
         {/* カード */}
         <div
@@ -182,39 +192,89 @@ export default function Register() {
 
             {/* 日付 */}
             <div style={{ marginBottom: "12px" }}>
-              <label
-                style={{
-                  color: "#4a90e2",
-                  fontSize: "20px",
-                  fontFamily: '"Zen Maru Gothic", sans-serif',
-                }}
-              >
-                開始日
-              </label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                style={{ width: "100%" }}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div style={{ marginBottom: "12px" }}>
+                  <label
+                    style={{
+                      color: "#4a90e2",
+                      fontSize: "20px",
+                      fontFamily: '"Zen Maru Gothic", sans-serif',
+                    }}
+                  >
+                    開始日
+                  </label>
+                  <DatePicker
+                    format="YYYY/MM/DD"
+                    value={startDate ? dayjs(startDate) : null}
+                    onChange={(newValue) =>
+                      setStartDate(
+                        newValue ? newValue.format("YYYY-MM-DD") : "",
+                      )
+                    }
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        size: "small",
+                        sx: {
+                          "& .MuiOutlinedInput-root": {
+                            minHeight: "40px",
+                            borderRadius: "12px",
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            padding: "6px 10px",
+                            backgroundColor: "#f9fafb",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                            borderColor: "#4a90e2",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </div>
+              </LocalizationProvider>
             </div>
 
             <div style={{ marginBottom: "12px" }}>
-              <label
-                style={{
-                  color: "#4a90e2",
-                  fontSize: "20px",
-                  fontFamily: '"Zen Maru Gothic", sans-serif',
-                }}
-              >
-                終了日
-              </label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                style={{ width: "100%" }}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div style={{ marginBottom: "12px" }}>
+                  <label
+                    style={{
+                      color: "#4a90e2",
+                      fontSize: "20px",
+                      fontFamily: '"Zen Maru Gothic", sans-serif',
+                    }}
+                  >
+                    終了日
+                  </label>
+                  <DatePicker
+                    format="YYYY/MM/DD"
+                    value={endDate ? dayjs(endDate) : null}
+                    onChange={(newValue) =>
+                      setEndDate(newValue ? newValue.format("YYYY-MM-DD") : "")
+                    }
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        size: "small",
+                        sx: {
+                          "& .MuiOutlinedInput-root": {
+                            minHeight: "40px",
+                            borderRadius: "12px",
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            padding: "6px 10px",
+                            backgroundColor: "#f9fafb",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+                            borderColor: "#4a90e2",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </div>
+              </LocalizationProvider>
             </div>
             <div
               style={{

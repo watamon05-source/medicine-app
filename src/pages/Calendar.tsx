@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import type { Medicine } from "../features/medicine/types";
 import Checkbox from "@mui/material/Checkbox";
 import { Card } from "@mui/material";
+import { Box } from "@mui/material";
+import { COLORS } from "../styles/colors";
 
 export default function Calendar() {
   const navigate = useNavigate();
@@ -74,13 +76,31 @@ export default function Calendar() {
     localStorage.setItem("checkedMap", JSON.stringify(newMap));
   };
 
-  const handleDelete = (id: string) => {
-    const updated = medicines.filter((med) => med.id !== id);
+  const handleDelete = (id: string, timingKey: string) => {
+    const updated = medicines
+      .map((med) => {
+        if (med.id !== id) return med;
 
-    setMedicines(updated); // ← これ重要🔥
+        return {
+          ...med,
+          timing: {
+            ...med.timing,
+            timeOfDay: {
+              ...med.timing?.timeOfDay,
+              [timingKey]: false,
+            },
+          },
+        };
+      })
+      .filter(
+        (med) =>
+          med.timing?.timeOfDay &&
+          Object.values(med.timing.timeOfDay).some(Boolean),
+      );
+
+    setMedicines(updated);
     localStorage.setItem("medicines", JSON.stringify(updated));
   };
-
   return (
     <div
       style={{
@@ -97,18 +117,18 @@ export default function Calendar() {
           maxWidth: "420px",
           padding: "20px 12px",
           boxSizing: "border-box",
-          backgroundColor: "#EEF2FF",
+          backgroundColor: COLORS.background,
         }}
       >
         {/* ヘッダー */}
-        <div
-          style={{
+        <Box
+          sx={{
             display: "flex",
             alignItems: "center",
             gap: "85px",
             marginBottom: "16px",
-            backgroundColor: "#a8d5a2",
-            height: "50px",
+            bgcolor: COLORS.headerLabel,
+            height: "60px",
           }}
         >
           {/* 戻る */}
@@ -127,8 +147,8 @@ export default function Calendar() {
               e.currentTarget.style.transform = "translateY(0)";
             }}
             style={{
-              background: "#66bb6a",
-              color: "#fff",
+              background: COLORS.backButton,
+              color: COLORS.backButtonChar,
               border: "none",
               padding: "8px 20px",
               fontSize: "14px",
@@ -147,13 +167,13 @@ export default function Calendar() {
             style={{
               margin: -20,
               fontFamily: '"Zen Maru Gothic", sans-serif',
-              color: "#FFFF",
+              color: COLORS.backButtonChar,
               fontSize: "30px",
             }}
           >
             カレンダー
           </h2>
-        </div>
+        </Box>
 
         {/* 月移動 */}
         <div style={{ textAlign: "center", marginBottom: "16px" }}>
@@ -314,7 +334,7 @@ export default function Calendar() {
                                 <button
                                   onClick={() => {
                                     if (window.confirm("削除しますか？")) {
-                                      handleDelete(med.id);
+                                      handleDelete(med.id, section.key); // ← 追加
                                     }
                                   }}
                                   style={{
